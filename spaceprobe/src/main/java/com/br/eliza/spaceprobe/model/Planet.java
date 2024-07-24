@@ -23,14 +23,10 @@ public class Planet {
     @OneToMany(mappedBy = "planets", cascade = CascadeType.ALL)
     private List<Rover> rovers = new ArrayList<>();
 
-    public boolean addRover(Rover rover) {
-        if (rovers.size() < 5) {
-            rovers.add(rover);
-            rover.setPlanet(this);
-            return true;
-        } else {
-            throw new RuntimeException("Planet is full");
-        }
+    public void addRover(Rover rover) {
+        rovers.add(rover);
+        rover.setPlanet(this);
     }
+
 
 }
