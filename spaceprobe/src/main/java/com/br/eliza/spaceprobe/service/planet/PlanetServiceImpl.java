@@ -40,14 +40,26 @@ public class PlanetServiceImpl implements PlanetService{
 
     @Transactional
     @Override
-    public Planet addRover(Long planetId, Rover rover) {
-        Planet planet = findById(planetId);
+    public Planet addRover(Long planetId, Long roverId) {
+        Planet planet = planetRepo.findById(planetId)
+                .orElseThrow(() -> new RuntimeException("Planet not found"));
+
+        Rover rover = roverRepo.findById(roverId)
+                .orElseThrow(() -> new RuntimeException("Rover not found"));
 
         if (planet.getRovers().size() >= 5) {
             throw new RuntimeException("Planet is full");
         }
         if (isOccupied(planetId, rover.getCoordinates())) {
             throw new RuntimeException("Coordinate is already occupied");
+        }
+
+        if (planet.getRovers().stream().anyMatch(r -> r.getRoverId().equals(rover.getRoverId()))) {
+            throw new RuntimeException("Rover is already added to this planet");
+        }
+
+        if (rover.getPlanet() != null) {
+            throw new RuntimeException("Rover is already associated with another planet");
         }
 
         rover.setPlanet(planet);
@@ -58,9 +70,30 @@ public class PlanetServiceImpl implements PlanetService{
 
     @Override
     public boolean isOccupied(Long planetId, Coordinates coordinates) {
-        Planet planet = findById(planetId);
+        Planet planet = planetRepo.findById(planetId)
+                .orElseThrow(() -> new RuntimeException("Planet not found"));
         return planet.getRovers().stream()
                 .anyMatch(rover -> rover.getCoordinates().equals(coordinates));
+    }
+
+    //fake delete
+    @Transactional
+    @Override
+    public void removeRover(Long planetId, Long roverId) {
+        Planet planet = planetRepo.findById(planetId)
+                .orElseThrow(() -> new RuntimeException("Planet not found"));
+
+        Rover rover = roverRepo.findById(roverId)
+                .orElseThrow(() -> new RuntimeException("Rover not found"));
+
+        if (!planet.getRovers().contains(rover)) {
+            throw new RuntimeException("Rover not found in the planet");
+        }
+
+        planet.getRovers().remove(rover);
+        rover.setPlanet(null);
+        planetRepo.save(planet);
+        roverRepo.save(rover);
     }
 
 }
