@@ -28,5 +28,9 @@ public class Planet {
         rover.setPlanet(this);
     }
 
+    public void removeRover(Rover rover) {
+        rovers.remove(rover);
+        rover.setPlanet(null);
+    }
 
 }
