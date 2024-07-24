@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class Coordenates {
+public class Coordinates {
     private int x;
     private int y;
 }

@@ -19,7 +19,7 @@ public class Rover {
     private Long roverId;
 
     @Embedded
-    private Coordenates coordenates;
+    private Coordinates coordinates;
 
     @Enumerated(EnumType.STRING)
     private Direction direction;
@@ -49,23 +49,23 @@ public class Rover {
     private void move() {
         switch (direction) {
             case NORTH:
-                if (coordenates.getY() + 1 < planet.getHeight()) {
-                    coordenates.setY(coordenates.getY() + 1);
+                if (coordinates.getY() + 1 < planet.getHeight()) {
+                    coordinates.setY(coordinates.getY() + 1);
                 }
                 break;
             case SOUTH:
-                if (coordenates.getY() - 1 >= 0) {
-                    coordenates.setY(coordenates.getY() - 1);
+                if (coordinates.getY() - 1 >= 0) {
+                    coordinates.setY(coordinates.getY() - 1);
                 }
                 break;
             case EAST:
-                if (coordenates.getX() + 1 < planet.getWidth()) {
-                    coordenates.setX(coordenates.getX() + 1);
+                if (coordinates.getX() + 1 < planet.getWidth()) {
+                    coordinates.setX(coordinates.getX() + 1);
                 }
                 break;
             case WEST:
-                if (coordenates.getX() - 1 >= 0) {
-                    coordenates.setX(coordenates.getX() - 1);
+                if (coordinates.getX() - 1 >= 0) {
+                    coordinates.setX(coordinates.getX() - 1);
                 }
                 break;
         }
