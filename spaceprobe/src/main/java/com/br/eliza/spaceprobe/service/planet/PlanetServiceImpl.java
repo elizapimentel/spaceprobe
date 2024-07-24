@@ -1,6 +1,8 @@
 package com.br.eliza.spaceprobe.service.planet;
 
+import com.br.eliza.spaceprobe.model.Coordinates;
 import com.br.eliza.spaceprobe.model.Planet;
+import com.br.eliza.spaceprobe.model.Rover;
 import com.br.eliza.spaceprobe.repository.PlanetRepository;
 import com.br.eliza.spaceprobe.repository.RoverRepository;
 import jakarta.transaction.Transactional;
@@ -19,8 +21,8 @@ public class PlanetServiceImpl implements PlanetService{
         this.roverRepo = roverRepo;
     }
 
-    @Override
     @Transactional
+    @Override
     public Planet save(Planet planet) {
         return planetRepo.save(planet);
     }
@@ -36,6 +38,29 @@ public class PlanetServiceImpl implements PlanetService{
                 .orElseThrow(() -> new RuntimeException("Planet not found"));
     }
 
+    @Transactional
+    @Override
+    public Planet addRover(Long planetId, Rover rover) {
+        Planet planet = findById(planetId);
 
+        if (planet.getRovers().size() >= 5) {
+            throw new RuntimeException("Planet is full");
+        }
+        if (isOccupied(planetId, rover.getCoordinates())) {
+            throw new RuntimeException("Coordinate is already occupied");
+        }
+
+        rover.setPlanet(planet);
+        planet.getRovers().add(rover);
+        return planetRepo.save(planet);
+
+    }
+
+    @Override
+    public boolean isOccupied(Long planetId, Coordinates coordinates) {
+        Planet planet = findById(planetId);
+        return planet.getRovers().stream()
+                .anyMatch(rover -> rover.getCoordinates().equals(coordinates));
+    }
 
 }

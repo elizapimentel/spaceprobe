@@ -1,6 +1,8 @@
 package com.br.eliza.spaceprobe.controller.planet;
 
+import com.br.eliza.spaceprobe.model.Coordinates;
 import com.br.eliza.spaceprobe.model.Planet;
+import com.br.eliza.spaceprobe.model.Rover;
 import com.br.eliza.spaceprobe.service.planet.PlanetServiceImpl;
 
 import org.springframework.http.ResponseEntity;
@@ -35,4 +37,21 @@ public class PlanetController {
         Planet planet = service.findById(id);
         return ResponseEntity.status(200).body(planet);
     }
+
+    @PostMapping("/{planetId}/rovers")
+    public ResponseEntity<Planet> addRover(@PathVariable Long planetId, @RequestBody Rover rover) {
+        try {
+            Planet addedRover = service.addRover(planetId, rover);
+            return ResponseEntity.ok(addedRover);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(null);
+        }
+    }
+
+    @GetMapping("/{planetId}/isOccupied")
+    public boolean isOccupied(@PathVariable Long planetId, @RequestBody Coordinates coordinates) {
+        return service.isOccupied(planetId, coordinates);
+    }
+
+
 }
