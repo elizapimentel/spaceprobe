@@ -30,5 +30,12 @@ public class PlanetServiceImpl implements PlanetService{
         return planetRepo.findAll();
     }
 
+    @Override
+    public Planet findById(Long id) {
+        return planetRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Planet not found"));
+    }
+
+
 
 }

@@ -29,4 +29,10 @@ public class PlanetController {
         Planet savedPlanet = service.save(planet);
         return ResponseEntity.status(201).body(savedPlanet);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Planet> getPlanetById(@PathVariable Long id) {
+        Planet planet = service.findById(id);
+        return ResponseEntity.status(200).body(planet);
+    }
 }
