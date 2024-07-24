@@ -12,11 +12,11 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Rove {
+public class Rover {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long probeId;
+    private Long roverId;
 
     @Embedded
     private Coordenates coordenates;

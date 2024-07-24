@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlanetModel {
+public class Planet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long planetId;
@@ -21,15 +21,16 @@ public class PlanetModel {
     private int height;
 
     @OneToMany(mappedBy = "planets", cascade = CascadeType.ALL)
-    private List<ProbeModel> probes = new ArrayList<>();
+    private List<Rover> rovers = new ArrayList<>();
 
-    public boolean addProbe(ProbeModel probe) {
-        if (probe.() < 5) {
-            probe.add(probe);
-            probe.setPlanet(this);
+    public boolean addRover(Rover rover) {
+        if (rovers.size() < 5) {
+            rovers.add(rover);
+            rover.setPlanet(this);
             return true;
+        } else {
+            throw new RuntimeException("Planet is full");
         }
-        return false;
     }
 
 }
