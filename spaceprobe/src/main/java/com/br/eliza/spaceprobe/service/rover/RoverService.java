@@ -1,0 +1,11 @@
+package com.br.eliza.spaceprobe.service.rover;
+
+import com.br.eliza.spaceprobe.model.Coordinates;
+import com.br.eliza.spaceprobe.model.Rover;
+
+import java.util.List;
+
+public interface RoverService {
+    List<Rover> findAll();
+    Rover save(Rover rover);
+}
