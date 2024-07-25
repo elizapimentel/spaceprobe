@@ -2,7 +2,6 @@ package com.br.eliza.spaceprobe.service.planet;
 
 import com.br.eliza.spaceprobe.model.Coordinates;
 import com.br.eliza.spaceprobe.model.Planet;
-import com.br.eliza.spaceprobe.model.Rover;
 
 import java.util.List;
 
