@@ -4,6 +4,7 @@ import com.br.eliza.spaceprobe.dto.PlanetDTO;
 import com.br.eliza.spaceprobe.model.Coordinates;
 import com.br.eliza.spaceprobe.service.planet.PlanetServiceImpl;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class PlanetController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<PlanetDTO> addPlanet(@RequestBody PlanetDTO planet) {
+    public ResponseEntity<PlanetDTO> addPlanet(@Valid @RequestBody PlanetDTO planet) {
         PlanetDTO savedPlanet = service.save(planet);
         return ResponseEntity.status(201).body(savedPlanet);
     }
@@ -48,7 +49,7 @@ public class PlanetController {
     }
 
     @GetMapping("/{planetId}/isOccupied")
-    public boolean isOccupied(@PathVariable Long planetId, @RequestBody Coordinates coordinates) {
+    public boolean isOccupied(@PathVariable Long planetId, @Valid @RequestBody Coordinates coordinates) {
         return service.isOccupied(planetId, coordinates);
     }
 

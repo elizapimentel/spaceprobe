@@ -3,6 +3,7 @@ package com.br.eliza.spaceprobe.controller.rover;
 import com.br.eliza.spaceprobe.dto.CommandDTO;
 import com.br.eliza.spaceprobe.dto.RoverDTO;
 import com.br.eliza.spaceprobe.service.rover.RoverService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class RoverController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<RoverDTO> save(@RequestBody RoverDTO rover) {
+    public ResponseEntity<RoverDTO> save(@Valid @RequestBody RoverDTO rover) {
         return ResponseEntity.ok(service.save(rover));
     }
 
@@ -30,7 +31,7 @@ public class RoverController {
     }
 
     @PostMapping("/move")
-    public ResponseEntity<RoverDTO> moveRover(@RequestBody CommandDTO commandDTO) {
+    public ResponseEntity<RoverDTO> moveRover(@Valid @RequestBody CommandDTO commandDTO) {
         RoverDTO updatedRover  = service.moveRover(commandDTO);
         return ResponseEntity.ok(updatedRover);
     }
