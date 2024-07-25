@@ -18,8 +18,16 @@ public class CoordinateServiceImpl implements CoordinateService{
     public Coordinates calculateNewCoordinates(Coordinates currentCoordinates,
                                                Direction direction) {
 
+        if (currentCoordinates == null || direction == null) {
+            throw new IllegalArgumentException("Coordinates and directions must not be null.");
+        }
+
         int x = currentCoordinates.getX();
         int y = currentCoordinates.getY();
+
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException("Coordinates must be non-negative.");
+        }
 
         switch (direction) {
             case NORTH:
