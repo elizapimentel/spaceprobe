@@ -30,4 +30,6 @@ public class Rover implements Serializable {
     @JsonBackReference
     private Planet planet;
 
+    private boolean isOn;
+
 }

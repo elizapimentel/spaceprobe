@@ -11,5 +11,6 @@ public interface RoverService {
     Rover moveRover(RoverCommandDTO commandDTO);
     Rover findById(Long id);
     Rover updatePlanet(Long roverId, Long planetId);
+    Rover turnOnOff(Long roverId);
 
 }

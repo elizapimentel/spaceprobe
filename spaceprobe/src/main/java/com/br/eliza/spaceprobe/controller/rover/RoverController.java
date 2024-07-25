@@ -53,4 +53,11 @@ public class RoverController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
+
+    @PutMapping("/{roverId}/plug")
+    public ResponseEntity<Rover> turnOnOff(@PathVariable Long roverId) {
+        Rover updatedRover = service.turnOnOff(roverId);
+        return ResponseEntity.ok(updatedRover);
+    }
+
 }

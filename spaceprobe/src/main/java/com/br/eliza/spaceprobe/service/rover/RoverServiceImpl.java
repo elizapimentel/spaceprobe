@@ -75,19 +75,46 @@ public class RoverServiceImpl implements RoverService {
 
     @Override
     public Rover findById(Long id) {
-        return roverRepo.findById(id)
+        Rover rover = roverRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Rover not found"));
+        if (rover.getPlanet() != null) {
+            System.out.println("Rover is allocated on planet: " + rover.getPlanet().getPlanetName());
+        } else {
+            System.out.println("Rover is not allocated on any planet.");
+        }
+        return rover;
     }
 
     @Override
     public Rover updatePlanet(Long roverId, Long planetId) {
         Rover rover = findById(roverId);
-        Planet planet = planetRepo.findById(planetId)
-                .orElseThrow(() -> new RuntimeException("Planet not found"));
 
-        rover.setPlanet(planet);
+        if (rover.getPlanet() != null) {
+            rover.getPlanet().getRovers().remove(rover);
+            planetRepo.save(rover.getPlanet());
+        }
+
+        if (planetId != null) {
+            Planet newPlanet = planetRepo.findById(planetId)
+                    .orElseThrow(() -> new RuntimeException("Planet not found"));
+            if (coordinateService.isOccupied(rover.getCoordinates(), newPlanet)) {
+                throw new RuntimeException("Coordinate is already occupied on the new planet. Try to relocate the rover first.");
+            }
+            rover.setPlanet(newPlanet);
+            newPlanet.getRovers().add(rover);
+            planetRepo.save(newPlanet);
+        } else {
+            rover.setPlanet(null);
+        }
+
         return roverRepo.save(rover);
     }
 
+    @Override
+    public Rover turnOnOff(Long roverId) {
+        Rover rover = findById(roverId);
+        rover.setOn(!rover.isOn()); // Alterna o estado do rover
+        return roverRepo.save(rover);
+    }
 
 }
