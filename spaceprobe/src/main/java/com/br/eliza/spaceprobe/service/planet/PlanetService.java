@@ -1,15 +1,15 @@
 package com.br.eliza.spaceprobe.service.planet;
 
+import com.br.eliza.spaceprobe.dto.PlanetDTO;
 import com.br.eliza.spaceprobe.model.Coordinates;
-import com.br.eliza.spaceprobe.model.Planet;
 
 import java.util.List;
 
 public interface PlanetService {
-    List<Planet> findAll();
-    Planet save(Planet planet);
-    Planet findById(Long id);
-    Planet addRover(Long planetId, Long roverId);
+    List<PlanetDTO> findAll();
+    PlanetDTO save(PlanetDTO planet);
+    PlanetDTO findById(Long id);
+    PlanetDTO addRover(Long planetId, Long roverId);
     boolean isOccupied(Long planetId, Coordinates coordinates);
 
 }

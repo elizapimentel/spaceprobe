@@ -1,6 +1,7 @@
 package com.br.eliza.spaceprobe.service.rover;
 
-import com.br.eliza.spaceprobe.dto.RoverCommandDTO;
+import com.br.eliza.spaceprobe.dto.CommandDTO;
+import com.br.eliza.spaceprobe.dto.RoverDTO;
 import com.br.eliza.spaceprobe.enums.Direction;
 import com.br.eliza.spaceprobe.model.Coordinates;
 import com.br.eliza.spaceprobe.model.Planet;
@@ -9,6 +10,7 @@ import com.br.eliza.spaceprobe.repository.PlanetRepository;
 import com.br.eliza.spaceprobe.repository.RoverRepository;
 import com.br.eliza.spaceprobe.service.coordinate.CoordinateService;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,28 +21,47 @@ public class RoverServiceImpl implements RoverService {
     private final RoverRepository roverRepo;
     private final PlanetRepository planetRepo;
     private final CoordinateService coordinateService;
+    private final ModelMapper modelMapper;
 
-    public RoverServiceImpl(RoverRepository roverRepo, PlanetRepository planetRepo, CoordinateService coordinateService) {
+    public RoverServiceImpl(RoverRepository roverRepo, PlanetRepository planetRepo, CoordinateService coordinateService, ModelMapper modelMapper) {
         this.roverRepo = roverRepo;
         this.planetRepo = planetRepo;
         this.coordinateService = coordinateService;
+        this.modelMapper = modelMapper;
     }
 
     @Transactional
     @Override
-    public Rover save(Rover rover) {
-        return roverRepo.save(rover);
+    public RoverDTO save(RoverDTO roverDTO) {
+        Rover rover = roverDTO.convertDtoToEntity();
+        Rover savedRover = roverRepo.save(rover);
+        return savedRover.convertEntityToDto();
     }
 
     @Override
-    public List<Rover> findAll() {
-        return roverRepo.findAll();
+    public List<RoverDTO> findAll() {
+        List<Rover> rovers = roverRepo.findAll();
+        return rovers.stream()
+                .map(Rover::convertEntityToDto)
+                .toList();
+    }
+
+    @Override
+    public RoverDTO findById(Long id) {
+        Rover rover = roverRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rover not found"));
+        if (rover.getPlanet() != null) {
+            System.out.println("Rover is allocated on planet: " + rover.getPlanet().getPlanetName());
+        } else {
+            System.out.println("Rover is not allocated on any planet.");
+        }
+        return rover.convertEntityToDto();
     }
 
     @Transactional
     @Override
-    public Rover moveRover(RoverCommandDTO roverCommandDTO) {
-        Rover rover = findById(roverCommandDTO.getRoverId());
+    public RoverDTO moveRover(CommandDTO roverCommandDTO) {
+        Rover rover = findById(roverCommandDTO.getRoverId()).convertDtoToEntity();
         Planet planet = rover.getPlanet();
         Coordinates currentCoordinates = rover.getCoordinates();
         Direction currentDirection = rover.getDirection();
@@ -67,27 +88,15 @@ public class RoverServiceImpl implements RoverService {
 
         rover.setCoordinates(currentCoordinates);
         rover.setDirection(currentDirection);
-        roverRepo.save(rover);
+        Rover updatedRover = roverRepo.save(rover);
         planetRepo.save(planet);
 
-        return rover;
+        return modelMapper.map(updatedRover, RoverDTO.class);
     }
 
     @Override
-    public Rover findById(Long id) {
-        Rover rover = roverRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Rover not found"));
-        if (rover.getPlanet() != null) {
-            System.out.println("Rover is allocated on planet: " + rover.getPlanet().getPlanetName());
-        } else {
-            System.out.println("Rover is not allocated on any planet.");
-        }
-        return rover;
-    }
-
-    @Override
-    public Rover updatePlanet(Long roverId, Long planetId) {
-        Rover rover = findById(roverId);
+    public RoverDTO updatePlanet(Long roverId, Long planetId) {
+        Rover rover = findById(roverId).convertDtoToEntity();
 
         if (rover.getPlanet() != null) {
             rover.getPlanet().getRovers().remove(rover);
@@ -107,14 +116,16 @@ public class RoverServiceImpl implements RoverService {
             rover.setPlanet(null);
         }
 
-        return roverRepo.save(rover);
+        Rover updatedRover = roverRepo.save(rover);
+        return updatedRover.convertEntityToDto();
     }
 
     @Override
-    public Rover turnOnOff(Long roverId) {
-        Rover rover = findById(roverId);
+    public RoverDTO turnOnOff(Long roverId) {
+        Rover rover = findById(roverId).convertDtoToEntity();
         rover.setOn(!rover.isOn()); // Alterna o estado do rover
-        return roverRepo.save(rover);
+        Rover updatedRover = roverRepo.save(rover);
+        return updatedRover.convertEntityToDto();
     }
 
 }

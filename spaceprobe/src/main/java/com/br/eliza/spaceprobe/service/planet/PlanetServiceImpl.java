@@ -1,5 +1,6 @@
 package com.br.eliza.spaceprobe.service.planet;
 
+import com.br.eliza.spaceprobe.dto.PlanetDTO;
 import com.br.eliza.spaceprobe.model.Coordinates;
 import com.br.eliza.spaceprobe.model.Planet;
 import com.br.eliza.spaceprobe.model.Rover;
@@ -7,6 +8,7 @@ import com.br.eliza.spaceprobe.repository.PlanetRepository;
 import com.br.eliza.spaceprobe.repository.RoverRepository;
 import com.br.eliza.spaceprobe.service.coordinate.CoordinateService;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,42 +19,50 @@ public class PlanetServiceImpl implements PlanetService{
     private final PlanetRepository planetRepo;
     private final RoverRepository roverRepo;
     private final CoordinateService coordinateService;
+    private final ModelMapper modelMapper;
 
-    public PlanetServiceImpl(PlanetRepository planetRepo, RoverRepository roverRepo, CoordinateService coordinateService) {
+    public PlanetServiceImpl(PlanetRepository planetRepo, RoverRepository roverRepo, CoordinateService coordinateService, ModelMapper modelMapper) {
         this.planetRepo = planetRepo;
         this.roverRepo = roverRepo;
         this.coordinateService = coordinateService;
+        this.modelMapper = modelMapper;
     }
 
     @Transactional
     @Override
-    public Planet save(Planet planet) {
-        return planetRepo.save(planet);
+    public PlanetDTO save(PlanetDTO planetDTO) {
+        Planet planet = planetDTO.convertDtoToEntity();
+        Planet savedPlanet = planetRepo.save(planet);
+        return savedPlanet.convertEntityToDto();
     }
 
     @Override
-    public List<Planet> findAll() {
-        return planetRepo.findAll();
+    public List<PlanetDTO> findAll() {
+        List<Planet> planets = planetRepo.findAll();
+        return planets.stream()
+                .map(Planet::convertEntityToDto)
+                .toList();
     }
 
     @Override
-    public Planet findById(Long id) {
-        return planetRepo.findById(id)
+    public PlanetDTO findById(Long id) {
+        Planet planet = planetRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Planet not found"));
+        return planet.convertEntityToDto();
     }
 
     @Override
     public boolean isOccupied(Long planetId, Coordinates coordinates) {
-        Planet planet = planetRepo.findById(planetId)
-                .orElseThrow(() -> new RuntimeException("Planet not found"));
+        PlanetDTO planetDTO = findById(planetId);
+        Planet planet = planetDTO.convertDtoToEntity();
         return coordinateService.isOccupied(coordinates, planet);
     }
 
     @Transactional
     @Override
-    public Planet addRover(Long planetId, Long roverId) {
-        Planet planet = planetRepo.findById(planetId)
-                .orElseThrow(() -> new RuntimeException("Planet not found"));
+    public PlanetDTO addRover(Long planetId, Long roverId) {
+        PlanetDTO planetDTO = findById(planetId);
+        Planet planet = planetDTO.convertDtoToEntity();
 
         Rover rover = roverRepo.findById(roverId)
                 .orElseThrow(() -> new RuntimeException("Rover not found"));
@@ -74,7 +84,9 @@ public class PlanetServiceImpl implements PlanetService{
 
         rover.setPlanet(planet);
         planet.getRovers().add(rover);
-        return planetRepo.save(planet);
+        planetRepo.save(planet);
+
+        return planet.convertEntityToDto();
 
     }
 

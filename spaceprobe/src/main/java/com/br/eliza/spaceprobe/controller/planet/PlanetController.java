@@ -1,7 +1,7 @@
 package com.br.eliza.spaceprobe.controller.planet;
 
+import com.br.eliza.spaceprobe.dto.PlanetDTO;
 import com.br.eliza.spaceprobe.model.Coordinates;
-import com.br.eliza.spaceprobe.model.Planet;
 import com.br.eliza.spaceprobe.service.planet.PlanetServiceImpl;
 
 import org.springframework.http.ResponseEntity;
@@ -20,27 +20,27 @@ public class PlanetController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Planet>> getAllPlanets() {
-        List<Planet> planets = service.findAll();
+    public ResponseEntity<List<PlanetDTO>> getAllPlanets() {
+        List<PlanetDTO> planets = service.findAll();
         return ResponseEntity.status(200).body(planets);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Planet> addPlanet(@RequestBody Planet planet) {
-        Planet savedPlanet = service.save(planet);
+    public ResponseEntity<PlanetDTO> addPlanet(@RequestBody PlanetDTO planet) {
+        PlanetDTO savedPlanet = service.save(planet);
         return ResponseEntity.status(201).body(savedPlanet);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Planet> getPlanetById(@PathVariable Long id) {
-        Planet planet = service.findById(id);
+    public ResponseEntity<PlanetDTO> getPlanetById(@PathVariable Long id) {
+        PlanetDTO planet = service.findById(id);
         return ResponseEntity.status(200).body(planet);
     }
 
     @PostMapping("/{planetId}/{roverId}")
-    public ResponseEntity<Planet> addRoverToPlanet(@PathVariable Long planetId, @PathVariable Long roverId) {
+    public ResponseEntity<PlanetDTO> addRoverToPlanet(@PathVariable Long planetId, @PathVariable Long roverId) {
         try {
-            Planet addedRover = service.addRover(planetId, roverId);
+            PlanetDTO addedRover = service.addRover(planetId, roverId);
             return ResponseEntity.ok(addedRover);
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).body(null);
