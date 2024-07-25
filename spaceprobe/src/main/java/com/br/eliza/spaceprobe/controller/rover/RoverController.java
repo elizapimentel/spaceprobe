@@ -1,4 +1,4 @@
-package com.br.eliza.spaceprobe.controller.planet;
+package com.br.eliza.spaceprobe.controller.rover;
 
 import com.br.eliza.spaceprobe.dto.RoverCommandDTO;
 import com.br.eliza.spaceprobe.model.Rover;
