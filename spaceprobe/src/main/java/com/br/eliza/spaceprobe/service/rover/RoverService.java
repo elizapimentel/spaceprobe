@@ -9,4 +9,7 @@ public interface RoverService {
     List<Rover> findAll();
     Rover save(Rover rover);
     Rover moveRover(RoverCommandDTO commandDTO);
+    Rover findById(Long id);
+    Rover updatePlanet(Long roverId, Long planetId);
+
 }

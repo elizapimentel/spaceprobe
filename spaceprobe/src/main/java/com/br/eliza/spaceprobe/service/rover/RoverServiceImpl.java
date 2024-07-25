@@ -40,9 +40,7 @@ public class RoverServiceImpl implements RoverService {
     @Transactional
     @Override
     public Rover moveRover(RoverCommandDTO roverCommandDTO) {
-        Rover rover = roverRepo.findById(roverCommandDTO.getRoverId())
-                .orElseThrow(() -> new RuntimeException("Rover not found"));
-
+        Rover rover = findById(roverCommandDTO.getRoverId());
         Planet planet = rover.getPlanet();
         Coordinates currentCoordinates = rover.getCoordinates();
         Direction currentDirection = rover.getDirection();
@@ -73,6 +71,22 @@ public class RoverServiceImpl implements RoverService {
         planetRepo.save(planet);
 
         return rover;
+    }
+
+    @Override
+    public Rover findById(Long id) {
+        return roverRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rover not found"));
+    }
+
+    @Override
+    public Rover updatePlanet(Long roverId, Long planetId) {
+        Rover rover = findById(roverId);
+        Planet planet = planetRepo.findById(planetId)
+                .orElseThrow(() -> new RuntimeException("Planet not found"));
+
+        rover.setPlanet(planet);
+        return roverRepo.save(rover);
     }
 
 
