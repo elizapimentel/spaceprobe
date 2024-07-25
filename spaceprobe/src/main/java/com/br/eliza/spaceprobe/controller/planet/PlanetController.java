@@ -2,7 +2,6 @@ package com.br.eliza.spaceprobe.controller.planet;
 
 import com.br.eliza.spaceprobe.model.Coordinates;
 import com.br.eliza.spaceprobe.model.Planet;
-import com.br.eliza.spaceprobe.model.Rover;
 import com.br.eliza.spaceprobe.service.planet.PlanetServiceImpl;
 
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,7 @@ public class PlanetController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Planet> createPlanet(@RequestBody Planet planet) {
+    public ResponseEntity<Planet> addPlanet(@RequestBody Planet planet) {
         Planet savedPlanet = service.save(planet);
         return ResponseEntity.status(201).body(savedPlanet);
     }
@@ -51,12 +50,6 @@ public class PlanetController {
     @GetMapping("/{planetId}/isOccupied")
     public boolean isOccupied(@PathVariable Long planetId, @RequestBody Coordinates coordinates) {
         return service.isOccupied(planetId, coordinates);
-    }
-
-    @DeleteMapping("/{planetId}/rovers/{roverId}")
-    public ResponseEntity<Void> removeRover(@PathVariable Long planetId, @PathVariable Long roverId) {
-        service.removeRover(planetId, roverId);
-        return ResponseEntity.status(204).build();
     }
 
 

@@ -11,6 +11,5 @@ public interface PlanetService {
     Planet findById(Long id);
     Planet addRover(Long planetId, Long roverId);
     boolean isOccupied(Long planetId, Coordinates coordinates);
-    void removeRover(Long planetId, Long roverId);
 
 }

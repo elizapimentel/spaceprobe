@@ -41,6 +41,13 @@ public class PlanetServiceImpl implements PlanetService{
                 .orElseThrow(() -> new RuntimeException("Planet not found"));
     }
 
+    @Override
+    public boolean isOccupied(Long planetId, Coordinates coordinates) {
+        Planet planet = planetRepo.findById(planetId)
+                .orElseThrow(() -> new RuntimeException("Planet not found"));
+        return coordinateService.isOccupied(coordinates, planet);
+    }
+
     @Transactional
     @Override
     public Planet addRover(Long planetId, Long roverId) {
@@ -71,31 +78,5 @@ public class PlanetServiceImpl implements PlanetService{
 
     }
 
-    @Override
-    public boolean isOccupied(Long planetId, Coordinates coordinates) {
-        Planet planet = planetRepo.findById(planetId)
-                .orElseThrow(() -> new RuntimeException("Planet not found"));
-        return coordinateService.isOccupied(coordinates, planet);
-    }
-
-    //fake delete
-    @Transactional
-    @Override
-    public void removeRover(Long planetId, Long roverId) {
-        Planet planet = planetRepo.findById(planetId)
-                .orElseThrow(() -> new RuntimeException("Planet not found"));
-
-        Rover rover = roverRepo.findById(roverId)
-                .orElseThrow(() -> new RuntimeException("Rover not found"));
-
-        if (!planet.getRovers().contains(rover)) {
-            throw new RuntimeException("Rover not found in the planet");
-        }
-
-        planet.getRovers().remove(rover);
-        rover.setPlanet(null);
-        planetRepo.save(planet);
-        roverRepo.save(rover);
-    }
 
 }
