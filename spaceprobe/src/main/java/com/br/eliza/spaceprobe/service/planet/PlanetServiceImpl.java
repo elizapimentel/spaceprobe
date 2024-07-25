@@ -5,6 +5,7 @@ import com.br.eliza.spaceprobe.model.Planet;
 import com.br.eliza.spaceprobe.model.Rover;
 import com.br.eliza.spaceprobe.repository.PlanetRepository;
 import com.br.eliza.spaceprobe.repository.RoverRepository;
+import com.br.eliza.spaceprobe.service.coordinate.CoordinateService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,12 @@ public class PlanetServiceImpl implements PlanetService{
 
     private final PlanetRepository planetRepo;
     private final RoverRepository roverRepo;
+    private final CoordinateService coordinateService;
 
-    public PlanetServiceImpl(PlanetRepository planetRepo, RoverRepository roverRepo) {
+    public PlanetServiceImpl(PlanetRepository planetRepo, RoverRepository roverRepo, CoordinateService coordinateService) {
         this.planetRepo = planetRepo;
         this.roverRepo = roverRepo;
+        this.coordinateService = coordinateService;
     }
 
     @Transactional
@@ -72,8 +75,7 @@ public class PlanetServiceImpl implements PlanetService{
     public boolean isOccupied(Long planetId, Coordinates coordinates) {
         Planet planet = planetRepo.findById(planetId)
                 .orElseThrow(() -> new RuntimeException("Planet not found"));
-        return planet.getRovers().stream()
-                .anyMatch(rover -> rover.getCoordinates().equals(coordinates));
+        return coordinateService.isOccupied(coordinates, planet);
     }
 
     //fake delete

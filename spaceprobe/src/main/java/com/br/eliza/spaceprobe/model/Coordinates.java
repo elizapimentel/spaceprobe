@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class Coordinates {
     private int x;
     private int y;
+
 }
