@@ -3,6 +3,10 @@ package com.br.eliza.spaceprobe.service.rover;
 import com.br.eliza.spaceprobe.dto.CommandDTO;
 import com.br.eliza.spaceprobe.dto.RoverDTO;
 import com.br.eliza.spaceprobe.enums.Direction;
+import com.br.eliza.spaceprobe.exceptions.CoordinateOccupiedException;
+import com.br.eliza.spaceprobe.exceptions.InvalidCommandException;
+import com.br.eliza.spaceprobe.exceptions.PlanetNotFoundException;
+import com.br.eliza.spaceprobe.exceptions.RoverNotFoundException;
 import com.br.eliza.spaceprobe.model.Coordinates;
 import com.br.eliza.spaceprobe.model.Planet;
 import com.br.eliza.spaceprobe.model.Rover;
@@ -49,7 +53,7 @@ public class RoverServiceImpl implements RoverService {
     @Override
     public RoverDTO findById(Long id) {
         Rover rover = roverRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Rover not found"));
+                .orElseThrow(() -> new RoverNotFoundException("Rover not found"));
         if (rover.getPlanet() != null) {
             System.out.println("Rover is allocated on planet: " + rover.getPlanet().getPlanetName());
         } else {
@@ -71,7 +75,7 @@ public class RoverServiceImpl implements RoverService {
                 case 'M':
                     Coordinates newCoordinates = coordinateService.calculateNewCoordinates(currentCoordinates, currentDirection);
                     if (coordinateService.isOccupied(newCoordinates, planet)) {
-                        throw new RuntimeException("Move results in collision with another rover");
+                        throw new CoordinateOccupiedException("Move results in collision with another rover");
                     }
                     currentCoordinates = newCoordinates;
                     break;
@@ -82,7 +86,7 @@ public class RoverServiceImpl implements RoverService {
                     currentDirection = coordinateService.turnRight(currentDirection);
                     break;
                 default:
-                    throw new IllegalArgumentException("Invalid command: " + command);
+                    throw new InvalidCommandException("Invalid command: " + command);
             }
         }
 
@@ -105,9 +109,9 @@ public class RoverServiceImpl implements RoverService {
 
         if (planetId != null) {
             Planet newPlanet = planetRepo.findById(planetId)
-                    .orElseThrow(() -> new RuntimeException("Planet not found"));
+                    .orElseThrow(() -> new PlanetNotFoundException("Planet not found"));
             if (coordinateService.isOccupied(rover.getCoordinates(), newPlanet)) {
-                throw new RuntimeException("Coordinate is already occupied on the new planet. Try to relocate the rover first.");
+                throw new CoordinateOccupiedException("Coordinate is already occupied on the new planet. Try to relocate the rover first.");
             }
             rover.setPlanet(newPlanet);
             newPlanet.getRovers().add(rover);
@@ -123,7 +127,7 @@ public class RoverServiceImpl implements RoverService {
     @Override
     public RoverDTO turnOnOff(Long roverId) {
         Rover rover = findById(roverId).convertDtoToEntity();
-        rover.setOn(!rover.isOn()); // Alterna o estado do rover
+        rover.setOn(!rover.isOn());
         Rover updatedRover = roverRepo.save(rover);
         return updatedRover.convertEntityToDto();
     }
