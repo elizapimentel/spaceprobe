@@ -22,24 +22,24 @@ public class RoverController {
 
     @PostMapping("/add")
     public ResponseEntity<RoverDTO> save(@Valid @RequestBody RoverDTO rover) {
-        return ResponseEntity.ok(service.save(rover));
+        return ResponseEntity.status(201).body(service.save(rover));
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<RoverDTO>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+        return ResponseEntity.status(200).body(service.findAll());
     }
 
     @PostMapping("/move")
     public ResponseEntity<RoverDTO> moveRover(@Valid @RequestBody CommandDTO commandDTO) {
-        RoverDTO updatedRover  = service.moveRover(commandDTO);
-        return ResponseEntity.ok(updatedRover);
+        RoverDTO updatedRover = service.moveRover(commandDTO);
+        return new ResponseEntity<>(updatedRover, HttpStatus.OK);
     }
 
     @GetMapping("/{roverId}")
     public ResponseEntity<RoverDTO> findById(@PathVariable Long roverId) {
         RoverDTO rover = service.findById(roverId);
-        return ResponseEntity.ok(rover);
+        return ResponseEntity.status(200).body(rover);
     }
 
     @PutMapping("/{roverId}/planet/{newPlanetId}")
@@ -47,18 +47,14 @@ public class RoverController {
             @PathVariable Long roverId,
             @PathVariable Long newPlanetId) {
 
-        try {
-            RoverDTO updatedRover = service.updatePlanet(roverId, newPlanetId);
-            return new ResponseEntity<>(updatedRover, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+        RoverDTO updatedRover = service.updatePlanet(roverId, newPlanetId);
+        return ResponseEntity.status(200).body(updatedRover);
     }
 
     @PutMapping("/{roverId}/plug")
     public ResponseEntity<RoverDTO> turnOnOff(@PathVariable Long roverId) {
         RoverDTO updatedRover = service.turnOnOff(roverId);
-        return ResponseEntity.ok(updatedRover);
+        return ResponseEntity.status(200).body(updatedRover);
     }
 
 }
