@@ -40,12 +40,8 @@ public class PlanetController {
 
     @PostMapping("/{planetId}/{roverId}")
     public ResponseEntity<PlanetDTO> addRoverToPlanet(@PathVariable Long planetId, @PathVariable Long roverId) {
-        try {
-            PlanetDTO addedRover = service.addRover(planetId, roverId);
-            return ResponseEntity.ok(addedRover);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body(null);
-        }
+        PlanetDTO addedRover = service.addRover(planetId, roverId);
+        return ResponseEntity.status(200).body(addedRover);
     }
 
     @GetMapping("/{planetId}/isOccupied")
@@ -54,7 +50,7 @@ public class PlanetController {
             @RequestParam int x,
             @RequestParam int y) {
         boolean occupied =  service.isOccupied(planetId, new Coordinates(x, y));
-        return ResponseEntity.ok(occupied);
+        return ResponseEntity.status(200).body(occupied);
     }
 
 
