@@ -49,8 +49,12 @@ public class PlanetController {
     }
 
     @GetMapping("/{planetId}/isOccupied")
-    public boolean isOccupied(@PathVariable Long planetId, @Valid @RequestBody Coordinates coordinates) {
-        return service.isOccupied(planetId, coordinates);
+    public ResponseEntity<Boolean> isOccupied(
+            @PathVariable Long planetId,
+            @RequestParam int x,
+            @RequestParam int y) {
+        boolean occupied =  service.isOccupied(planetId, new Coordinates(x, y));
+        return ResponseEntity.ok(occupied);
     }
 
 
