@@ -1,6 +1,7 @@
 package com.br.eliza.spaceprobe.controller.planet;
 
 import com.br.eliza.spaceprobe.dto.PlanetDTO;
+import com.br.eliza.spaceprobe.dto.RoverDTO;
 import com.br.eliza.spaceprobe.model.Coordinates;
 import com.br.eliza.spaceprobe.service.planet.PlanetServiceImpl;
 
@@ -38,9 +39,9 @@ public class PlanetController {
         return ResponseEntity.status(200).body(planet);
     }
 
-    @PostMapping("/{planetId}/{roverId}")
-    public ResponseEntity<PlanetDTO> addRoverToPlanet(@PathVariable Long planetId, @PathVariable Long roverId) {
-        PlanetDTO addedRover = service.addRover(planetId, roverId);
+    @PostMapping("/{planetId}")
+    public ResponseEntity<PlanetDTO> addRoverToPlanet(@PathVariable Long planetId, @RequestBody RoverDTO rover) {
+        PlanetDTO addedRover = service.addRover(planetId, rover);
         return ResponseEntity.status(200).body(addedRover);
     }
 
