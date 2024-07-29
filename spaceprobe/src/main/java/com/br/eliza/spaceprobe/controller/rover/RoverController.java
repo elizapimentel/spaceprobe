@@ -6,12 +6,14 @@ import com.br.eliza.spaceprobe.service.rover.RoverService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/v1/rovers")
+@Validated
 public class RoverController {
 
     private final RoverService service;
