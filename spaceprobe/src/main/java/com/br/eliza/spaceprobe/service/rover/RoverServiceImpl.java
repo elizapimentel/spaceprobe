@@ -3,10 +3,7 @@ package com.br.eliza.spaceprobe.service.rover;
 import com.br.eliza.spaceprobe.dto.CommandDTO;
 import com.br.eliza.spaceprobe.dto.RoverDTO;
 import com.br.eliza.spaceprobe.enums.Direction;
-import com.br.eliza.spaceprobe.exceptions.CoordinateOccupiedException;
-import com.br.eliza.spaceprobe.exceptions.InvalidCommandException;
-import com.br.eliza.spaceprobe.exceptions.PlanetNotFoundException;
-import com.br.eliza.spaceprobe.exceptions.RoverNotFoundException;
+import com.br.eliza.spaceprobe.exceptions.*;
 import com.br.eliza.spaceprobe.model.Coordinates;
 import com.br.eliza.spaceprobe.model.Planet;
 import com.br.eliza.spaceprobe.model.Rover;
@@ -38,6 +35,14 @@ public class RoverServiceImpl implements RoverService {
     @Override
     public RoverDTO save(RoverDTO roverDTO) {
         Rover rover = roverDTO.convertDtoToEntity();
+        if (rover.getCoordinates() == null || rover.getDirection() == null) {
+            throw new InvalidCommandException("Coordinates nor directions must not be null.");
+        }
+        int x = rover.getCoordinates().getX();
+        int y = rover.getCoordinates().getY();
+        if (x <= 0 || y <= 0) {
+            throw new InvalidCommandException("Coordinates must not be 0 nor negative.");
+        }
         Rover savedRover = roverRepo.save(rover);
         return savedRover.convertEntityToDto();
     }
@@ -53,7 +58,7 @@ public class RoverServiceImpl implements RoverService {
     @Override
     public RoverDTO findById(Long id) {
         Rover rover = roverRepo.findById(id)
-                .orElseThrow(() -> new RoverNotFoundException("Rover not found"));
+                .orElseThrow(() -> new RoverNotFoundException("Rover " + id + " not found"));
         if (rover.getPlanet() != null) {
             System.out.println("Rover is allocated on planet: " + rover.getPlanet().getPlanetName());
         } else {
@@ -70,7 +75,12 @@ public class RoverServiceImpl implements RoverService {
         Coordinates currentCoordinates = rover.getCoordinates();
         Direction currentDirection = rover.getDirection();
 
-        for (char command : roverCommandDTO.getCommands()) {
+
+        for (Character command : roverCommandDTO.getCommands()) {
+            if (command == null) {
+                throw new InvalidCommandException("Command cannot be null");
+            }
+
             switch (command) {
                 case 'M':
                     Coordinates newCoordinates = coordinateService.calculateNewCoordinates(currentCoordinates, currentDirection);
@@ -127,7 +137,7 @@ public class RoverServiceImpl implements RoverService {
     @Override
     public RoverDTO turnOnOff(Long roverId) {
         Rover rover = findById(roverId).convertDtoToEntity();
-        rover.setOn(!rover.isOn());
+        rover.setIsOn(!rover.getIsOn());
         Rover updatedRover = roverRepo.save(rover);
         return updatedRover.convertEntityToDto();
     }
