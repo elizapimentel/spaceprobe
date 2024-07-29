@@ -1,6 +1,7 @@
 package com.br.eliza.spaceprobe.service.planet;
 
 import com.br.eliza.spaceprobe.dto.PlanetDTO;
+import com.br.eliza.spaceprobe.dto.RoverDTO;
 import com.br.eliza.spaceprobe.exceptions.*;
 import com.br.eliza.spaceprobe.model.Coordinates;
 import com.br.eliza.spaceprobe.model.Planet;
@@ -9,7 +10,6 @@ import com.br.eliza.spaceprobe.repository.PlanetRepository;
 import com.br.eliza.spaceprobe.repository.RoverRepository;
 import com.br.eliza.spaceprobe.service.coordinate.CoordinateService;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +31,9 @@ public class PlanetServiceImpl implements PlanetService{
     @Override
     public PlanetDTO save(PlanetDTO planetDTO) {
         Planet planet = planetDTO.convertDtoToEntity();
+        if (planet.getPlanetName()==null || planet.getPlanetName().isBlank()) {
+            throw new RuntimeException("Planet name must not be informed.");
+        }
         Planet savedPlanet = planetRepo.save(planet);
         return savedPlanet.convertEntityToDto();
     }
@@ -59,26 +62,49 @@ public class PlanetServiceImpl implements PlanetService{
 
     @Transactional
     @Override
-    public PlanetDTO addRover(Long planetId, Long roverId) {
-        PlanetDTO planetDTO = findById(planetId);
-        Planet planet = planetDTO.convertDtoToEntity();
+    public PlanetDTO addRover(Long planetId, RoverDTO roverDTO) {
+        Planet planet = planetRepo.findById(planetId)
+                .orElseThrow(() -> new PlanetNotFoundException("Planet not found"));
 
-        Rover rover = roverRepo.findById(roverId)
+        Rover rover = roverRepo.findById(roverDTO.getRoverId())
                 .orElseThrow(() -> new RoverNotFoundException("Rover not found"));
+
+        if (roverDTO.getCoordinates() != null) {
+            rover.setCoordinates(roverDTO.getCoordinates());
+        }
+        if (roverDTO.getDirection() != null) {
+            rover.setDirection(roverDTO.getDirection());
+        }
+
+        if (rover.getCoordinates() == null || rover.getDirection() == null) {
+            throw new InvalidCommandException("Coordinates and directions must not be null.");
+        }
+
+        int roverX = rover.getCoordinates().getX();
+        int roverY = rover.getCoordinates().getY();
+
+        if (roverX < 0 || roverY < 0) {
+            throw new InvalidCommandException("Coordinates must not be negative.");
+        }
 
         if (planet.getRovers().size() >= 5) {
             throw new PlanetFullException("Planet is full");
         }
+
         if (isOccupied(planetId, rover.getCoordinates())) {
             throw new CoordinateOccupiedException("Coordinate is already occupied");
         }
 
         if (planet.getRovers().stream().anyMatch(r -> r.getRoverId().equals(rover.getRoverId()))) {
-            throw new RoverUnavailable("Rover is already added to this planet");
+            throw new RoverUnavailableException("Rover is already added to this planet");
         }
 
         if (rover.getPlanet() != null) {
-            throw new RoverUnavailable("Rover is already associated with another planet");
+            throw new RoverUnavailableException("Rover is already associated with another planet");
+        }
+
+        if (roverDTO.getIsOn() != null) {
+            rover.setIsOn(roverDTO.getIsOn());
         }
 
         rover.setPlanet(planet);
@@ -86,7 +112,6 @@ public class PlanetServiceImpl implements PlanetService{
         planetRepo.save(planet);
 
         return planet.convertEntityToDto();
-
     }
 
 
