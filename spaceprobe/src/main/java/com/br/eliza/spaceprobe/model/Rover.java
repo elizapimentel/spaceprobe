@@ -35,7 +35,7 @@ public class Rover implements Serializable {
     @JsonBackReference
     private Planet planet;
 
-    private boolean isOn;
+    private Boolean isOn;
 
     public RoverDTO convertEntityToDto() {
         return new ModelMapper().map(this, RoverDTO.class);
