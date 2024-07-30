@@ -27,16 +27,16 @@ public class LinkUtil {
         planetDTO.add(selfLink);
     }
 
-    // Adiciona um link "self" a um RoverDTO
+    // Adiciona um link a um RoverDTO
     public void createSelfLinkInRover(RoverDTO roverDTO) {
-        Link selfLink = linkTo(PlanetController.class).slash(roverDTO.getRoverId())
+        Link selfLink = linkTo(RoverController.class).slash(roverDTO.getRoverId())
                 .withSelfRel();
         roverDTO.add(selfLink);
     }
 
     public void createSelfLinkInCollectionsToRover(RoverDTO roverDTO)
             throws PlanetNotFoundException {
-        Link selfLink = linkTo(methodOn(PlanetController.class).getPlanetById(roverDTO.getRoverId()))
+        Link selfLink = linkTo(methodOn(RoverController.class).findById(roverDTO.getRoverId()))
                 .withSelfRel().expand();
         roverDTO.add(selfLink);
     }
