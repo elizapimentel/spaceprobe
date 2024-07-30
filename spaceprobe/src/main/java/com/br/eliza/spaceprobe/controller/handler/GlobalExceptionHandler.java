@@ -8,7 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -81,4 +81,15 @@ public class GlobalExceptionHandler {
                 .build();
         return ResponseEntity.status(BAD_REQUEST).body(error);
     }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<StandardError> handleNullPointerException(
+            NullPointerException ex) {
+        var error = StandardError.builder()
+                .code(INTERNAL_SERVER_ERROR.value())
+                .error(INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .build();
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(error);
+    }
+
 }
