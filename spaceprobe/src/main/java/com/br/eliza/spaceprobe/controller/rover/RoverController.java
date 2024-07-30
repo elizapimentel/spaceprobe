@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/v1/rovers")
+@RequestMapping("/v2/rovers")
 @Validated
 public class RoverController {
 

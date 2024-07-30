@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 
 @RestController
-@RequestMapping("/v1/planets")
+@RequestMapping("/v2/planets")
 public class PlanetController {
 
     private final PlanetServiceImpl service;
