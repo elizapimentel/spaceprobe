@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,18 +33,16 @@ public class PlanetController {
     @GetMapping("/all")
     public ResponseEntity<List<PlanetDTO>> getAllPlanets() {
         List<PlanetDTO> planets = service.findAll();
-        List<PlanetDTO> planetsDTO = new ArrayList<>();
-
         planets.stream().forEach(dto -> {
             try {
                 linkUtil.createSelfLinkInCollectionsToPlanet(dto);
-                planetsDTO.add(dto);
             } catch (PlanetNotFoundException e) {
-                logger.log(Level.SEVERE, "Planet not found", e);
+                logger.log(Level.SEVERE, "Planet not found: " + dto.getPlanetName());
             }
         });
 
-        return new ResponseEntity<>(planetsDTO, HttpStatus.OK);
+        return new ResponseEntity<>(planets, HttpStatus.OK);
+
     }
 
     @PostMapping("/add")
