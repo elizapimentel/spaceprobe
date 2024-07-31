@@ -3,8 +3,8 @@ package com.br.eliza.spaceprobe.controller.planet;
 import com.br.eliza.spaceprobe.dto.PlanetDTO;
 import com.br.eliza.spaceprobe.dto.RoverDTO;
 import com.br.eliza.spaceprobe.exceptions.PlanetNotFoundException;
-import com.br.eliza.spaceprobe.exceptions.RoverNotFoundException;
 import com.br.eliza.spaceprobe.model.Coordinates;
+import com.br.eliza.spaceprobe.service.planet.PlanetService;
 import com.br.eliza.spaceprobe.service.planet.PlanetServiceImpl;
 
 import com.br.eliza.spaceprobe.util.LinkUtil;
@@ -22,11 +22,11 @@ import java.util.logging.Logger;
 @RequestMapping("/v2/planets")
 public class PlanetController {
 
-    private final PlanetServiceImpl service;
+    private final PlanetService service;
     private final LinkUtil linkUtil;
     private static final Logger logger = Logger.getLogger(PlanetController.class.getName());
 
-    public PlanetController(PlanetServiceImpl service, LinkUtil linkUtil) {
+    public PlanetController(PlanetService service, LinkUtil linkUtil) {
         this.service = service;
         this.linkUtil = linkUtil;
     }
