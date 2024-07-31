@@ -3,6 +3,7 @@ package com.br.eliza.spaceprobe.controller.planet;
 import com.br.eliza.spaceprobe.dto.PlanetDTO;
 import com.br.eliza.spaceprobe.dto.RoverDTO;
 import com.br.eliza.spaceprobe.exceptions.PlanetNotFoundException;
+import com.br.eliza.spaceprobe.exceptions.RoverNotFoundException;
 import com.br.eliza.spaceprobe.model.Coordinates;
 import com.br.eliza.spaceprobe.service.planet.PlanetServiceImpl;
 
@@ -33,14 +34,7 @@ public class PlanetController {
     @GetMapping("/all")
     public ResponseEntity<List<PlanetDTO>> getAllPlanets() {
         List<PlanetDTO> planets = service.findAll();
-        planets.stream().forEach(dto -> {
-            try {
-                linkUtil.createSelfLinkInCollectionsToPlanet(dto);
-            } catch (PlanetNotFoundException e) {
-                logger.log(Level.SEVERE, "Planet not found: " + dto.getPlanetName());
-            }
-        });
-
+        planets.stream().forEach(linkUtil::createSelfLinkInCollectionsToPlanet);
         return new ResponseEntity<>(planets, HttpStatus.OK);
 
     }
@@ -54,9 +48,14 @@ public class PlanetController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PlanetDTO> getPlanetById(@PathVariable Long id) {
-        PlanetDTO planet = service.findById(id);
-        linkUtil.createSelfLinkInPlanet(planet);
-        return new ResponseEntity<>(planet, HttpStatus.OK);
+        try {
+            PlanetDTO planet = service.findById(id);
+            linkUtil.createSelfLinkInPlanet(planet);
+            return new ResponseEntity<>(planet, HttpStatus.OK);
+        } catch (PlanetNotFoundException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/{planetId}")
