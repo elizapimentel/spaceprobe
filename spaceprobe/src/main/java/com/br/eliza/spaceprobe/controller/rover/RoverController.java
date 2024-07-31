@@ -45,14 +45,7 @@ public class RoverController {
         List<RoverDTO> rovers = service.findAll();
         List<RoverDTO> roversDTO = new ArrayList<>();
 
-        rovers.stream().forEach(dto -> {
-            try {
-                linkUtil.createSelfLinkInCollectionsToRover(dto);
-                roversDTO.add(dto);
-            } catch (RoverNotFoundException e) {
-                logger.log(Level.SEVERE, "Rover not found", e);
-            }
-        });
+        rovers.forEach(linkUtil::createSelfLinkInCollectionsToRover);
 
         return new ResponseEntity<>(roversDTO, HttpStatus.OK);
     }
@@ -66,16 +59,24 @@ public class RoverController {
 
     @GetMapping("/{roverId}")
     public ResponseEntity<RoverDTO> findById(@PathVariable Long roverId) {
-        RoverDTO rover = service.findById(roverId);
-        linkUtil.createSelfLinkInRover(rover);
-        return new ResponseEntity<>(rover, HttpStatus.OK);
+        try {
+            RoverDTO rover = service.findById(roverId);
+            linkUtil.createSelfLinkInRover(rover);
+            return new ResponseEntity<>(rover, HttpStatus.OK);
+        } catch (RoverNotFoundException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        }
     }
 
     @PutMapping("/{roverId}/planet/{newPlanetId}")
     public ResponseEntity<RoverDTO> updateRoverPlanet(
             @PathVariable Long roverId,
             @PathVariable Long newPlanetId) {
-
+        if (roverId == null || newPlanetId == null) {
+            throw new IllegalArgumentException("RoverId and PlanetId must be provided");
+        }
         RoverDTO updatedRover = service.updatePlanet(roverId, newPlanetId);
         linkUtil.createSelfLinkInRover(updatedRover);
         return new ResponseEntity<>(updatedRover, HttpStatus.OK);
@@ -83,9 +84,15 @@ public class RoverController {
 
     @PutMapping("/{roverId}/plug")
     public ResponseEntity<RoverDTO> turnOnOff(@PathVariable Long roverId) {
-        RoverDTO updatedRover = service.turnOnOff(roverId);
-        linkUtil.createSelfLinkInRover(updatedRover);
-        return new ResponseEntity<>(updatedRover, HttpStatus.OK);
+        try {
+            RoverDTO updatedRover = service.turnOnOff(roverId);
+            linkUtil.createSelfLinkInRover(updatedRover);
+            return new ResponseEntity<>(updatedRover, HttpStatus.OK);
+        } catch (RoverNotFoundException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        }
     }
 
 }
