@@ -4,13 +4,10 @@ import com.br.eliza.spaceprobe.dto.PlanetDTO;
 import com.br.eliza.spaceprobe.dto.RoverDTO;
 import com.br.eliza.spaceprobe.exceptions.PlanetNotFoundException;
 import com.br.eliza.spaceprobe.model.Coordinates;
-import com.br.eliza.spaceprobe.service.planet.PlanetServiceImpl;
+import com.br.eliza.spaceprobe.service.planet.PlanetService;
 import com.br.eliza.spaceprobe.util.LinkUtil;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -40,18 +37,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PlanetControllerTest {
 
     @MockBean
-    private PlanetServiceImpl service;
+    private PlanetService service;
 
     @Autowired
     private MockMvc mockMvc;
 
-    @InjectMocks
-    private PlanetController planetController;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void mustReturnAllPlanets() throws Exception{
@@ -111,7 +101,7 @@ public class PlanetControllerTest {
         mockMvc.perform(get(PLANET_BASE_URL + "/{id}", PLANET_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andReturn()
+                .andReturn();
 
         verify(service, times(1)).findById(eq(PLANET_ID));
     }
