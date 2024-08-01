@@ -33,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = PlanetController.class,
         includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
                 classes = LinkUtil.class))
-@TestPropertySource(properties = "server.port=8080")
 public class PlanetControllerTest {
 
     @MockBean
