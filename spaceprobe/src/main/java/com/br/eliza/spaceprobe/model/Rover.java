@@ -44,8 +44,7 @@ public class Rover implements Serializable {
         ModelMapper modelMapper = new ModelMapper();
         RoverDTO roverDTO = modelMapper.map(this, RoverDTO.class);
         if (this.planet != null) {
-            PlanetDTO planetDTO = modelMapper.map(this.planet, PlanetDTO.class);
-            roverDTO.setPlanetDTO(planetDTO);
+            roverDTO.setPlanetDTO(modelMapper.map(this.planet, PlanetDTO.class));
         }
         return roverDTO;
     }
