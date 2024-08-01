@@ -70,8 +70,13 @@ public class RoverServiceImpl implements RoverService {
     @Transactional
     @Override
     public RoverDTO moveRover(CommandDTO roverCommandDTO) {
-        Rover rover = findById(roverCommandDTO.getRoverId()).convertDtoToEntity();
+        Rover rover = roverRepo.findById(roverCommandDTO.getRoverId())
+                .orElseThrow(() -> new RoverNotFoundException("Rover not found with ID: " + roverCommandDTO.getRoverId()));
+
         Planet planet = rover.getPlanet();
+        if (planet == null) {
+            throw new NullPointerException("Planet associated with Rover is null");
+        }
         Coordinates currentCoordinates = rover.getCoordinates();
         Direction currentDirection = rover.getDirection();
 

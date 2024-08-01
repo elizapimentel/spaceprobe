@@ -24,6 +24,8 @@ public class RoverDTO extends RepresentationModel<RoverDTO> {
     @Valid
     private Direction direction;
 
+    private PlanetDTO planetDTO;
+
     private Boolean isOn;
 
     public Rover convertDtoToEntity() {

@@ -1,8 +1,11 @@
 package com.br.eliza.spaceprobe.model;
 
+import com.br.eliza.spaceprobe.dto.PlanetDTO;
 import com.br.eliza.spaceprobe.dto.RoverDTO;
 import com.br.eliza.spaceprobe.enums.Direction;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -38,7 +41,12 @@ public class Rover implements Serializable {
     private Boolean isOn;
 
     public RoverDTO convertEntityToDto() {
-        return new ModelMapper().map(this, RoverDTO.class);
+        ModelMapper modelMapper = new ModelMapper();
+        RoverDTO roverDTO = modelMapper.map(this, RoverDTO.class);
+        if (this.planet != null) {
+            roverDTO.setPlanetDTO(modelMapper.map(this.planet, PlanetDTO.class));
+        }
+        return roverDTO;
     }
 
 }
