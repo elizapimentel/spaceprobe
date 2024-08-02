@@ -4,7 +4,7 @@ import com.br.eliza.spaceprobe.dto.CommandDTO;
 import com.br.eliza.spaceprobe.dto.RoverDTO;
 import com.br.eliza.spaceprobe.exceptions.RoverNotFoundException;
 import com.br.eliza.spaceprobe.service.rover.RoverService;
-import com.br.eliza.spaceprobe.util.LinkUtil;
+import com.br.eliza.spaceprobe.util.config.LinkConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @WebMvcTest(controllers = RoverController.class,
         includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-                classes = LinkUtil.class))
+                classes = LinkConfig.class))
 public class RoverControllerTest {
 
     @MockBean

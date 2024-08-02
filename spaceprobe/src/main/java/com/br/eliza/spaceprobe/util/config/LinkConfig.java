@@ -1,4 +1,4 @@
-package com.br.eliza.spaceprobe.util;
+package com.br.eliza.spaceprobe.util.config;
 
 import com.br.eliza.spaceprobe.controller.planet.PlanetController;
 import com.br.eliza.spaceprobe.controller.rover.RoverController;
@@ -12,7 +12,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class LinkUtil {
+public class LinkConfig {
 
     public void createSelfLinkInPlanet(PlanetDTO planetDTO) {
         Link selfLink = linkTo(PlanetController.class).slash(planetDTO.getPlanetId())
