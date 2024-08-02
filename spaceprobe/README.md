@@ -57,6 +57,11 @@ Execute no terminal `docker-compose up --build` para subir as imagens e containe
 - Um planeta não pode ser deletado.
 
 
+## **Documentação - Swagger**
+
+http://localhost:8080/api/swagger-ui/index.html
+
+
 ##  ROTAS
 
 
