@@ -1,11 +1,11 @@
-package com.br.eliza.spaceprobe.config;
+package com.br.eliza.spaceprobe.util.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AppConfig {
+public class MapperConfig {
 
     @Bean
     public ModelMapper modelMapper() {
