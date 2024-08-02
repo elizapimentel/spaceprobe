@@ -1,11 +1,11 @@
-version: "3.9"
+version: "3.8"
 
 
 services:
   mysqldb:
     container_name: database
     platform: linux/arm64
-    image: "mysql:8.0"
+    image: arm64v8/mysql:8.0
     restart: always
     env_file: .env
     environment:
