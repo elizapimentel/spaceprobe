@@ -15,7 +15,7 @@
 - [x] Checar se o planeta está com a coordenada ocupada.
 
 
-## **Tecnologias**
+## **Tecnologias/Ferramentas**
 
 - Java 17
 - MySQL
@@ -23,7 +23,7 @@
 - Docker
 - ModelMapper
 - Lombok
-- jUnit5 - Teste
+- jUnit5
 - Mockito
 - Jacoco
 - Spring-boot 3.3.2
@@ -55,6 +55,14 @@ Execute no terminal `docker-compose up --build` para subir as imagens e containe
 - As sondas podem ser ligadas ou desligadas, mas não excluídas.
 - As sondas podem ser transferidas para outros planetas.
 - Um planeta não pode ser deletado.
+- As sondas e planetas não podem ser deletados.
+- Em caso da sonda, para indicar o não uso, ela retornaria a Terra.
+
+
+## **Arquitetura do projeto**
+
+O projeto possui Arquitetura Orientada a Serviços (SOA) e Hexagonal (Ports e Adapters).
+
 
 
 ## **Documentação - Swagger**
@@ -65,7 +73,7 @@ http://localhost:8080/api/swagger-ui/index.html
 ##  ROTAS
 
 
-O projeto foi estruturado seguindo modelo da estrura de Arquitetura de Software Rest/Restful, utilizando os protocolos HTTP - POST, GET, PUT, DELETE - CRUD.
+O projeto foi estruturado seguindo modelo da estrura de Arquitetura de Software Restful, utilizando os protocolos HTTP - POST, GET, PUT e gerando self-links (HATEOAS).
 
 <br>
 
@@ -109,6 +117,11 @@ O projeto foi estruturado seguindo modelo da estrura de Arquitetura de Software 
 
 <br>
 </div>
+
+
+## Solicitações da API / Maiores infos
+
+[Github - Elo7](https://gist.github.com/elo7-developer/f0b91a7a98e5e65288b875ac6d376875)
 
 
 ## Dúvidas
